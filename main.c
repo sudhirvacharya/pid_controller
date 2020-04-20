@@ -1,25 +1,18 @@
 /*
-v1.0
+v2.0
 date:20-04-2020
 close loop control
 ServoX Controller Inc.
-hfvliuggol;/;n;;
+
 */
 
 #include "main.h"
-
-
 DAC_HandleTypeDef hdac;
-
 TIM_HandleTypeDef htim2;
-
-
 
 float Travel, Position=0;
 uint16_t uValue=0,  i=0, rotation=10,  
 signed int Error=0;;
-
-
 
 uint16_t SP_Sin_LUT[101]=
 {    
@@ -63,14 +56,23 @@ HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
 	while (1)
 	{			
 		do
-		{					
-			Travel = TIM2->CNT; /*Read Encoder values from 12 bit Encoder*/				
-			Position = (Travel/(rotation*4095))*4095;	
-			Error = SP_Sin_LUT[i] - Position;  /*Error =SP- Fbk*/ 				
-			uValue=((Error*4095)/(4095*2))+2048;	
+		{	
+			/*Read Encoder values from 12 bit Encoder*/	
+			Travel = TIM2->CNT;			
+			
+			/*position range:0 to 4095*/
+			Position = (Travel/(rotation*4095))*4095;
+			
+			/*Error range:-4095 to +4095, Error must be signed*/
+			Error = SP_Sin_LUT[i] - Position;  /*Error =set_point - position*/ 
+			
+			/*uValue range :0 to 4095, uvalue mustbe unsigned*/
+			uValue=((Error*4095)/(4095*2))+2048;
+			
+			/*send uvalue from 0 to 4095*/
 			HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, uValue); 					
 		}				
-		while(Error!=0); // WAITING FOR POSITION REACH SET POINT Waiting for postion to Reach Setpoint
+		while(Error!=0);/*Waiting for postion to Reach Setpoint*/
 		i++;
 		if(i>100)
 		{
