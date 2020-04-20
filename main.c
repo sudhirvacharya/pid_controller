@@ -2,6 +2,7 @@
 v1.0
 date:20-04-2020
 close loop control
+ServoX Controller Inc.
 */
 
 #include "main.h"
