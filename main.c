@@ -10,11 +10,11 @@ ServoX Controller Inc.
 DAC_HandleTypeDef hdac;
 TIM_HandleTypeDef htim2;
 
-float Travel, Position=0;
-uint16_t uValue=0,  i=0, rotation=10,  
-signed int Error=0;;
+float Travel, Position=0, Error=0;;
+uint32_t uValue=0,  i=0, rotation=10,  
 
-uint16_t SP_Sin_LUT[101]=
+
+float SP_Sin_LUT[101]=
 {    
 0,4,16,36,64,
 100,144,195,253,319,391,470,555,
@@ -72,7 +72,7 @@ HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
 			/*send uvalue from 0 to 4095*/
 			HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, uValue); 					
 		}				
-		while(Error!=0);/*Waiting for postion to Reach Setpoint*/
+		while(Error> 1 || Errot <-1);/*Waiting for postion to Reach Setpoint*/
 		i++;
 		if(i>100)
 		{
